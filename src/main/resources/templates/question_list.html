@@ -21,38 +21,46 @@
     <!-- 페이징 처리 시작 -->
     <div th:if="${!paging.isEmpty()}">
         <ul class="pagination justify-content-center">
+            <!-- 추가 기능(처음 버튼) 시작 -->
             <li class="page-item" th:classappend="${!paging.hasPrevious()} ? 'disabled'">
                 <a th:href="@{?page=0}" class="page-link">처음</a>
             </li>
+            <!-- 추가 기능(처음 버튼) 끝 -->
             <li class="page-item" th:classappend="${!paging.hasPrevious()} ? 'disabled'">
                 <a class="page-link" th:href="@{|?page=${paging.number-1}|}">
                     <span>이전</span>
                 </a>
             </li>
+            <!-- 추가 기능(생략 기능) 시작 -->
             <li th:if="${paging.number-2 > 0}">
                 <a href="" class="page-link">
                     <span>...</span>
                 </a>
             </li>
+            <!-- 추가 기능(생략 기능) 끝 -->
             <li th:each="page : ${#numbers.sequence(0, paging.totalPages-1)}"
                 th:if="${page >= paging.number-2 and page <= paging.number+2}"
                 th:classappend="${page == paging.number} ? 'active'"
                 class="page-item">
                 <a th:text="${page}" class="page-link" th:href="@{|?page=${page}|}"></a>
             </li>
+            <!-- 추가 기능(생략 기능) 시작 -->
             <li th:if="${paging.number+2 < 30}">
                 <a href="" class="page-link">
                     <span>...</span>
                 </a>
             </li>
+            <!-- 추가 기능(생략 기능) 끝 -->
             <li class="page-item" th:classappend="${!paging.hasNext()} ? 'disabled'">
                 <a class="page-link" th:href="@{|?page=${paging.number+1}|}">
                     <span>다음</span>
                 </a>
             </li>
+            <!-- 추가 기능(마지막 버튼) 시작 -->
             <li class="page-item" th:classappend="${!paging.hasNext()} ? 'disabled'">
                 <a th:href="@{|?page=${paging.totalPages-1}|}" class="page-link">마지막</a>
             </li>
+            <!-- 추가 기능(마지막 버튼) 끝 -->
         </ul>
     </div>
     <!-- 페이징 처리 끝 -->
