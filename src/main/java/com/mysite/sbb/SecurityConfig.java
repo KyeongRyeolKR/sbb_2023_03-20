@@ -21,11 +21,11 @@ public class SecurityConfig {
         http.authorizeHttpRequests()
                 .requestMatchers(new AntPathRequestMatcher("/**"))
                 .permitAll()
-                .and()
+            .and()
                 .formLogin()
                 .loginPage("/user/login")
                 .defaultSuccessUrl("/")
-                .and()
+            .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
                 .logoutSuccessUrl("/")
@@ -34,9 +34,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /**
-     * 패스워드 암호화 설정
-     */
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
