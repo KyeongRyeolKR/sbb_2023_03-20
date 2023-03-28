@@ -14,19 +14,19 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public SiteUser create(String username, String email, String password) {
-        SiteUser user = new SiteUser();
+        SiteUser user = SiteUser.builder()
+                .username(username)
+                .email(email)
+                .password(passwordEncoder.encode(password))
+                .build();
 
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(password)); // 비밀번호 암호화
-
-        this.userRepository.save(user);
+        userRepository.save(user);
 
         return user;
     }
 
     public SiteUser getUser(String username) {
-        Optional<SiteUser> siteUser = this.userRepository.findByUsername(username);
+        Optional<SiteUser> siteUser = userRepository.findByUsername(username);
 
         if(siteUser.isPresent()) {
             return siteUser.get();
