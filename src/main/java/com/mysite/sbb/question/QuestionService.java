@@ -1,8 +1,8 @@
 package com.mysite.sbb.question;
 
-import com.mysite.sbb.DataNotFoundException;
-import com.mysite.sbb.answer.Answer;
-import com.mysite.sbb.user.SiteUser;
+import com.example.sbb2.DataNotFoundException;
+import com.example.sbb2.answer.Answer;
+import com.example.sbb2.user.SiteUser;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,11 +29,13 @@ public class QuestionService {
 
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
 
-        return this.questionRepository.findAllByKeyword(kw, pageable);
+        Specification<Question> spec = search(kw);
+
+        return questionRepository.findAll(spec, pageable);
     }
 
     public Question getQuestion(Integer id) {
-        Optional<Question> question = this.questionRepository.findById(id);
+        Optional<Question> question = questionRepository.findById(id);
 
         if(question.isPresent()) {
             return question.get();
@@ -42,15 +44,14 @@ public class QuestionService {
         }
     }
 
-    public void create(String subject, String content, SiteUser author) {
-        Question q = new Question();
+    public void create(String subject, String content, SiteUser siteUser) {
+        Question question = new Question();
+        question.setSubject(subject);
+        question.setContent(content);
+        question.setCreateDate(LocalDateTime.now());
+        question.setAuthor(siteUser);
 
-        q.setSubject(subject);
-        q.setContent(content);
-        q.setCreateDate(LocalDateTime.now());
-        q.setAuthor(author);
-
-        this.questionRepository.save(q);
+        questionRepository.save(question);
     }
 
     public void modify(Question question, String subject, String content) {
@@ -58,17 +59,17 @@ public class QuestionService {
         question.setContent(content);
         question.setModifyDate(LocalDateTime.now());
 
-        this.questionRepository.save(question);
+        questionRepository.save(question);
     }
 
     public void delete(Question question) {
-        this.questionRepository.delete(question);
+        questionRepository.delete(question);
     }
 
     public void vote(Question question, SiteUser siteUser) {
         question.getVoter().add(siteUser);
 
-        this.questionRepository.save(question);
+        questionRepository.save(question);
     }
 
     private Specification<Question> search(String kw) {
@@ -76,18 +77,15 @@ public class QuestionService {
             private static final long serialVersionUID = 1L;
             @Override
             public Predicate toPredicate(Root<Question> q, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                query.distinct(true);
+                query.distinct(true);  // 중복을 제거
                 Join<Question, SiteUser> u1 = q.join("author", JoinType.LEFT);
                 Join<Question, Answer> a = q.join("answerList", JoinType.LEFT);
                 Join<Answer, SiteUser> u2 = a.join("author", JoinType.LEFT);
-
-                return cb.or(
-                        cb.like(q.get("subject"), "%" + kw + "%"),
-                        cb.like(q.get("content"), "%" + kw + "%"),
-                        cb.like(u1.get("username"), "%" + kw + "%"),
-                        cb.like(q.get("content"), "%" + kw + "%"),
-                        cb.like(u2.get("username"), "%" + kw + "%")
-                );
+                return cb.or(cb.like(q.get("subject"), "%" + kw + "%"), // 제목
+                        cb.like(q.get("content"), "%" + kw + "%"),      // 내용
+                        cb.like(u1.get("username"), "%" + kw + "%"),    // 질문 작성자
+                        cb.like(a.get("content"), "%" + kw + "%"),      // 답변 내용
+                        cb.like(u2.get("username"), "%" + kw + "%"));   // 답변 작성자
             }
         };
     }

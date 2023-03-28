@@ -17,23 +17,17 @@ public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @ManyToOne
-    private SiteUser author;
-
     @Column(length = 200)
     private String subject;
-
     @Column(columnDefinition = "TEXT")
     private String content;
-
     private LocalDateTime createDate;
-
-    private LocalDateTime modifyDate;
-
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<Answer> answerList;
-
+    @ManyToOne
+    private SiteUser author;
+    private LocalDateTime modifyDate;
+    private String modifiedAt;
     @ManyToMany
     private Set<SiteUser> voter;
 }
