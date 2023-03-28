@@ -1,8 +1,8 @@
 package com.mysite.sbb.question;
 
-import com.example.sbb2.DataNotFoundException;
-import com.example.sbb2.answer.Answer;
-import com.example.sbb2.user.SiteUser;
+import com.mysite.sbb.DataNotFoundException;
+import com.mysite.sbb.answer.Answer;
+import com.mysite.sbb.user.SiteUser;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -49,7 +49,7 @@
                 </div>
                 <div class="badge bg-light text-dark p-2 text-start">
                     <div class="mb-2">
-                        <span th:if="${question.author != null}" th:text="|작성자 : ${question.author.username}|"></span>
+                        <span th:if="${question.author != null}" th:text="|작성자 : ${answer.author.username}|"></span>
                     </div>
                     <div th:text="${#temporals.format(answer.createDate, 'yy.MM.dd | hh시 mm분 ss초')}"></div>
                 </div>
