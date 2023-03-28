@@ -16,20 +16,15 @@ public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @ManyToOne
-    private SiteUser author;
-
-    @Column(columnDefinition = "TEXT")
-    private String content;
-
-    private LocalDateTime createDate;
-
-    private LocalDateTime modifyDate;
-
     @ManyToOne
     private Question question;
-
+    @Column(columnDefinition = "TEXT")
+    private String content;
+    private LocalDateTime createDate;
+    @ManyToOne
+    private SiteUser author;
+    private LocalDateTime modifyDate;
+    private String modifiedAt;
     @ManyToMany
     private Set<SiteUser> voter;
 }
