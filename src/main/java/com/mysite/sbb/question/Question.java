@@ -30,6 +30,6 @@ public class Question {
     private String modifiedAt;
     @ManyToMany
     private Set<SiteUser> voter;
-    @Column(columnDefinition = "INTEGER default 0", nullable = false)
-    private Integer hit;
+    @Column(columnDefinition = "integer default 0", nullable = false)
+    private int hit;
 }

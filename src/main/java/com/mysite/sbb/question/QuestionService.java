@@ -35,6 +35,18 @@ public class QuestionService {
         return questionRepository.findAll(spec, pageable);
     }
 
+    public Page<Question> getMyList(int page, String name) {
+        List<Sort.Order> sorts = new ArrayList<>();
+
+        sorts.add(Sort.Order.desc("createDate"));
+
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+
+        Specification<Question> spec = searchByUsername(name);
+
+        return questionRepository.findAll(spec, pageable);
+    }
+
     public Question getQuestion(Integer id) {
         Optional<Question> question = questionRepository.findById(id);
 
@@ -87,6 +99,22 @@ public class QuestionService {
                         cb.like(u1.get("username"), "%" + kw + "%"),    // 질문 작성자
                         cb.like(a.get("content"), "%" + kw + "%"),      // 답변 내용
                         cb.like(u2.get("username"), "%" + kw + "%"));   // 답변 작성자
+            }
+        };
+    }
+
+
+
+    private Specification<Question> searchByUsername(String username) {
+        return new Specification<Question>() {
+            private static final long serialVersionUID = 1L;
+            @Override
+            public Predicate toPredicate(Root<Question> q, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                query.distinct(true);  // 중복을 제거
+                Join<Question, SiteUser> u1 = q.join("author", JoinType.LEFT);
+                Join<Question, Answer> a = q.join("answerList", JoinType.LEFT);
+                Join<Answer, SiteUser> u2 = a.join("author", JoinType.LEFT);
+                return cb.or(cb.like(u1.get("username"), "%" + username + "%"));   // 답변 작성자
             }
         };
     }

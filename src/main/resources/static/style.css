@@ -18,3 +18,8 @@ body {
     order: -1;
     margin-right: auto;
 }
+
+.profile-img {
+    width: 10%;
+    height: 10%;
+}

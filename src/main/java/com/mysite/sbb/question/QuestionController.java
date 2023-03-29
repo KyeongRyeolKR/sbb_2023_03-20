@@ -138,4 +138,20 @@ public class QuestionController {
 
         return String.format("redirect:/question/detail/%s", id);
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/my")
+    public String myQuestion(Model model, Principal principal, @RequestParam(value = "page", defaultValue = "0") int page) {
+        Page<Question> paging = questionService.getMyList(page, principal.getName());
+
+        List<Question> myQuestions = paging.stream()
+                .filter(e -> e.getAuthor() != null)
+                .filter(e -> e.getAuthor().getUsername().equals(principal.getName()))
+                .toList();
+
+        model.addAttribute("paging", paging);
+        model.addAttribute("myQuestions", myQuestions);
+
+        return "my_question";
+    }
 }
