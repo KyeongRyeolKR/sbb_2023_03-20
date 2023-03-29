@@ -41,6 +41,8 @@ public class QuestionController {
     public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm) {
         Question question = questionService.getQuestion(id);
 
+        questionService.increaseHit(id);
+
         List<Answer> answerList = question.getAnswerList();
         for(Answer answer : answerList) {
             if(answer.getModifyDate() != null) {
